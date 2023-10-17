@@ -8,44 +8,33 @@ module Cohere
 
     ENDPOINT_URL = "https://api.cohere.ai/v1"
 
-    def initialize(api_key:)
-      @api_key = api_key
+    def initialize(h={})
+      puts "[COHERE] #{h}"
+      @api_key = h.delete(:api_key)
     end
 
     # This endpoint generates realistic text conditioned on a given input.
-    def generate(
-      prompt:,
-      model: nil,
-      num_generations: nil,
-      max_tokens: nil,
-      preset: nil,
-      temperature: nil,
-      k: nil,
-      p: nil,
-      frequency_penalty: nil,
-      presence_penalty: nil,
-      end_sequences: nil,
-      stop_sequences: nil,
-      return_likelihoods: nil,
-      logit_bias: nil,
-      truncate: nil
-    )
+    def generate(h={})
+      hh = { prompt: "",
+             model: nil,
+             num_generations: nil,
+             max_tokens: nil,
+             preset: nil,
+             temperature: nil,
+             k: nil,
+             p: nil,
+             frequency_penalty: nil,
+             presence_penalty: nil,
+             end_sequences: nil,
+             stop_sequences: nil,
+             return_likelihoods: nil,
+             logit_bias: nil,
+             truncate: nil
+           }
+      hhh = hh.merge(h)
       response = connection.post("generate") do |req|
-        req.body = {prompt: prompt}
-        req.body[:model] = model if model
-        req.body[:num_generations] = num_generations if num_generations
-        req.body[:max_tokens] = max_tokens if max_tokens
-        req.body[:preset] = preset if preset
-        req.body[:temperature] = temperature if temperature
-        req.body[:k] = k if k
-        req.body[:p] = p if p
-        req.body[:frequency_penalty] = frequency_penalty if frequency_penalty
-        req.body[:presence_penalty] = presence_penalty if presence_penalty
-        req.body[:end_sequences] = end_sequences if end_sequences
-        req.body[:stop_sequences] = stop_sequences if stop_sequences
-        req.body[:return_likelihoods] = return_likelihoods if return_likelihoods
-        req.body[:logit_bias] = logit_bias if logit_bias
-        req.body[:truncate] = truncate if truncate
+        req.body = {prompt: hhh[:prompt]}
+        hhh.each_pair { |k,v| req.body[k] = v if v; }
       end
       response.body
     end
